@@ -209,6 +209,33 @@ with tab1:
         row["is_small_city"] = 1 if city_pop < 5000 else 0
 
         prob, pred = predict_transaction(active_model, row)
+        # -----------------------------
+        # Rule-Based Fraud Layer
+        # -----------------------------
+        rule_score = 0
+        rule_reasons = []
+
+        if amount > 1000:
+            rule_score += 1
+            rule_reasons.append("Transaction amount exceeds typical fraud range")
+
+        if hour < 6:
+            rule_score += 1
+            rule_reasons.append("Late-night transaction")
+
+        if category in ["shopping_net", "misc_net", "grocery_pos"]:
+            rule_score += 1
+            rule_reasons.append("High-risk merchant category")
+
+        # Rules increase risk, but final decision still uses model probability
+        if rule_score == 1:
+            prob = min(prob + 0.10, 1.0)
+        elif rule_score == 2:
+            prob = min(prob + 0.20, 1.0)
+        elif rule_score == 3:
+            prob = min(prob + 0.30, 1.0)
+
+        pred = 1 if prob >= 0.30 else 0
         risk = get_risk_label(prob)
 
         st.markdown("---")
@@ -223,7 +250,7 @@ with tab1:
         c2.metric("Risk Score", risk)
         c3.metric("Amount", f"${amount:,.2f}")
         c4.metric("Hour", f"{hour:02d}:00")
-
+        
         st.progress(float(prob))
 
         st.subheader("📝 GPT-2 Explanation")
@@ -231,11 +258,18 @@ with tab1:
         with st.spinner("Generating explanation..."):
             from gpt2_explainer import generate_fraud_explanation
 
-            location_flag = 1 if hour < 6 else 0
+            location_flag = 1 if city_pop < 5000 else 0
             raw_exp = generate_fraud_explanation(prob, amount, hour, location_flag)
             processed_exp = process_explanation(raw_exp)
 
         explanation_text = processed_exp["clean"]
+        
+        if rule_reasons:
+            explanation_text += (
+                " Key risk factors include: "
+                + ", ".join(rule_reasons)
+                + "."
+            )
 
         if not explanation_text:
             explanation_text = (
