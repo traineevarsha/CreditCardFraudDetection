@@ -5,6 +5,9 @@ import joblib
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
+def load_css():
+    with open("styles.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 from sklearn.metrics import (
     confusion_matrix, ConfusionMatrixDisplay,
     roc_curve, auc,
@@ -114,6 +117,7 @@ st.set_page_config(
     page_icon="💳",
     layout="wide"
 )
+load_css()
 
 st.title("💳 Credit Card Fraud Detection System")
 st.caption(f"Active model: **{best_name}** — saved model loaded from disk")

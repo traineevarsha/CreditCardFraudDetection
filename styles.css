@@ -1,0 +1,254 @@
+/* =========================================================
+   Premium Purple Risk Intelligence Theme
+   Credit Card Fraud Detection System
+   ========================================================= */
+
+.stApp {
+    background:
+        radial-gradient(circle at top left, rgba(192, 132, 252, 0.22), transparent 32%),
+        radial-gradient(circle at top right, rgba(34, 211, 238, 0.16), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(168, 85, 247, 0.18), transparent 36%),
+        linear-gradient(135deg, #210638 0%, #2b0b45 38%, #15051f 100%);
+    color: #f8f5ff;
+}
+
+/* Main content */
+.block-container {
+    max-width: 1350px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+/* Title */
+h1 {
+    background: linear-gradient(90deg, #f5d0fe, #c084fc, #22d3ee);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.9rem !important;
+    font-weight: 950 !important;
+    letter-spacing: -1px;
+}
+
+h2, h3 {
+    color: #fff7ff !important;
+    font-weight: 850 !important;
+}
+
+[data-testid="stCaptionContainer"] {
+    color: #d8b4fe;
+    font-size: 1rem;
+}
+
+/* Tabs */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 10px;
+    background: rgba(28, 8, 48, 0.78);
+    padding: 12px;
+    border-radius: 24px;
+    border: 1px solid rgba(34, 211, 238, 0.35);
+    box-shadow:
+        0 0 25px rgba(34, 211, 238, 0.18),
+        0 18px 45px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(18px);
+}
+
+.stTabs [data-baseweb="tab"] {
+    background: rgba(50, 18, 78, 0.86);
+    border-radius: 16px;
+    padding: 12px 20px;
+    color: #e9d5ff;
+    font-weight: 800;
+    border: 1px solid rgba(216, 180, 254, 0.22);
+    transition: all 0.2s ease-in-out;
+}
+
+.stTabs [data-baseweb="tab"]:hover {
+    color: #ffffff;
+    border-color: #22d3ee;
+    box-shadow: 0 0 18px rgba(34, 211, 238, 0.25);
+    transform: translateY(-1px);
+}
+
+.stTabs [aria-selected="true"] {
+    background: linear-gradient(135deg, #9333ea, #06b6d4);
+    color: #ffffff !important;
+    box-shadow:
+        0 0 22px rgba(34, 211, 238, 0.35),
+        0 14px 35px rgba(147, 51, 234, 0.35);
+}
+
+/* Labels */
+label {
+    color: #f3e8ff !important;
+    font-weight: 750 !important;
+}
+
+/* Inputs */
+.stTextInput input,
+.stNumberInput input {
+    background: rgba(250, 245, 255, 0.98) !important;
+    color: #1e0733 !important;
+    border-radius: 14px !important;
+    border: 2px solid rgba(34, 211, 238, 0.42) !important;
+    padding: 0.7rem !important;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+}
+
+.stTextInput input:focus,
+.stNumberInput input:focus {
+    border: 2px solid #22d3ee !important;
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
+}
+
+/* Select boxes */
+div[data-baseweb="select"] > div {
+    background: rgba(250, 245, 255, 0.98) !important;
+    color: #1e0733 !important;
+    border-radius: 14px !important;
+    border: 2px solid rgba(34, 211, 238, 0.42) !important;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+}
+
+/* Buttons */
+.stButton > button {
+    width: 100%;
+    border: none;
+    border-radius: 16px;
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+    font-weight: 900;
+    color: #ffffff;
+    background: linear-gradient(135deg, #a855f7, #06b6d4);
+    box-shadow:
+        0 0 20px rgba(34, 211, 238, 0.25),
+        0 15px 35px rgba(147, 51, 234, 0.32);
+    transition: all 0.2s ease-in-out;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px) scale(1.01);
+    background: linear-gradient(135deg, #c084fc, #22d3ee);
+    color: #ffffff;
+}
+
+/* Download button */
+.stDownloadButton > button {
+    width: 100%;
+    border-radius: 16px;
+    border: none;
+    background: linear-gradient(135deg, #14b8a6, #22d3ee);
+    color: #ffffff;
+    font-weight: 900;
+    box-shadow: 0 14px 30px rgba(34, 211, 238, 0.25);
+}
+
+/* Metric cards */
+[data-testid="stMetric"] {
+    background:
+        linear-gradient(145deg, rgba(38, 12, 66, 0.98), rgba(20, 5, 31, 0.94));
+    border: 1px solid rgba(34, 211, 238, 0.28);
+    border-left: 5px solid #22d3ee;
+    border-radius: 24px;
+    padding: 22px;
+    backdrop-filter: blur(16px);
+    box-shadow:
+        0 0 24px rgba(34, 211, 238, 0.14),
+        0 20px 45px rgba(0, 0, 0, 0.38);
+}
+
+[data-testid="stMetricLabel"] {
+    color: #d8b4fe !important;
+    font-weight: 850 !important;
+}
+
+[data-testid="stMetricValue"] {
+    color: #ffffff !important;
+    font-size: 1.9rem !important;
+    font-weight: 950 !important;
+}
+
+/* Alerts */
+[data-testid="stAlert"] {
+    border-radius: 24px;
+    border: 1px solid rgba(34, 211, 238, 0.25);
+    box-shadow:
+        0 0 20px rgba(34, 211, 238, 0.10),
+        0 18px 38px rgba(0, 0, 0, 0.30);
+}
+
+/* Progress bar */
+.stProgress > div > div > div > div {
+    background: linear-gradient(90deg, #22d3ee, #c084fc, #fb7185);
+}
+
+/* DataFrames */
+[data-testid="stDataFrame"] {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(34, 211, 238, 0.25);
+    box-shadow:
+        0 0 18px rgba(34, 211, 238, 0.10),
+        0 18px 38px rgba(0, 0, 0, 0.30);
+}
+
+/* Charts */
+[data-testid="stImage"],
+[data-testid="stPyplot"] {
+    background: #faf5ff;
+    padding: 18px;
+    border-radius: 24px;
+    border: 1px solid rgba(216, 180, 254, 0.75);
+    box-shadow:
+        0 0 20px rgba(34, 211, 238, 0.12),
+        0 20px 45px rgba(0, 0, 0, 0.32);
+}
+
+/* Markdown */
+.stMarkdown {
+    color: #f8f5ff;
+}
+
+/* Code */
+code {
+    background: rgba(38, 12, 66, 0.96);
+    color: #67e8f9;
+    padding: 3px 7px;
+    border-radius: 7px;
+}
+
+/* Divider */
+hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.45), transparent);
+    margin: 1.7rem 0;
+}
+
+/* Radio */
+.stRadio label {
+    background: rgba(38, 12, 66, 0.72);
+    border-radius: 12px;
+    padding: 6px 10px;
+}
+
+/* Spacing */
+[data-testid="stVerticalBlock"] {
+    gap: 0.95rem;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem !important;
+    }
+
+    .block-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        padding: 8px 10px;
+        font-size: 0.82rem;
+    }
+}
