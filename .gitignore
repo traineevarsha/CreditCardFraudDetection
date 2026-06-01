@@ -1,0 +1,10 @@
+venv/
+data/
+models/
+__pycache__/
+
+*.pyc
+*.zip
+
+.vscode/
+.idea/
