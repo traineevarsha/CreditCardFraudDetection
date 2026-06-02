@@ -2,6 +2,7 @@
 import os
 from datetime import datetime
 import joblib
+import seaborn as sns
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -21,15 +22,14 @@ from shap_explainer import (
     get_feature_importance,
     explain_single_prediction
 )
-# -----------------------------
+
 # Basic checks
-# -----------------------------
 if not os.path.exists("models/best_model.pkl"):
     st.error("Models not found. Please run phase1.py and phase2.py first.")
     st.stop()
-# -----------------------------
+
 # Load saved objects
-# -----------------------------
+
 @st.cache_resource
 def load_essentials():
     scaler = joblib.load("models/scaler.pkl")
@@ -97,7 +97,6 @@ def predict_transaction(model, row):
 
     return fraud_prob, prediction
 
-
 def get_risk_label(prob):
     if prob < 0.30:
         return "🟢 LOW RISK"
@@ -108,10 +107,8 @@ def get_risk_label(prob):
     else:
         return "🔴 CRITICAL RISK"
 
-
-# -----------------------------
 # Page setup
-# -----------------------------
+
 st.set_page_config(
     page_title="Fraud Detection",
     page_icon="💳",
@@ -119,35 +116,30 @@ st.set_page_config(
 )
 load_css()
 
-st.title("💳 Credit Card Fraud Detection System")
+st.title(" Credit Card Fraud Detection System")
 st.caption(f"Active model: **{best_name}** — saved model loaded from disk")
 
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "💳 Check Transaction",
-    "📊 Model Evaluation",
-    "📈 Data Insights",
-    "🔍 Feature Importance",
-    "📄 Fraud Reports",
-    "🤖 Fraud Assistant"
+    "Check Transaction",
+    "Model Evaluation",
+    "Data Insights",
+    "Feature Importance",
+    "Fraud Reports",
+    "Fraud Assistant"
 ])
 
-
-# ==========================================================
 # TAB 1 — CHECK TRANSACTION
-# ==========================================================
+
 with tab1:
     st.subheader("Enter Transaction Details")
-
     col1, col2 = st.columns(2)
-
     with col1:
         amount = st.number_input(
             "Transaction Amount ($)",
             min_value=1.0,
             value=150.0
         )
-
         category = st.selectbox(
             "Merchant Category",
             list(encoders["category"].classes_)
@@ -199,7 +191,7 @@ with tab1:
     else:
         active_model = best_model
 
-    if st.button("🔍 Check Transaction", use_container_width=True):
+    if st.button(" Check Transaction", use_container_width=True):
         row = {name: 0 for name in feature_names}
         row["amt"] = amount
         row["category"] = encode_value("category", category)
@@ -213,9 +205,7 @@ with tab1:
         row["is_small_city"] = 1 if city_pop < 5000 else 0
 
         prob, pred = predict_transaction(active_model, row)
-        # -----------------------------
         # Rule-Based Fraud Layer
-        # -----------------------------
         rule_score = 0
         rule_reasons = []
 
@@ -245,9 +235,9 @@ with tab1:
         st.markdown("---")
 
         if pred == 1:
-            st.error("## 🚨 FRAUD DETECTED")
+            st.error("##  FRAUD DETECTED")
         else:
-            st.success("## ✅ LEGITIMATE")
+            st.success("##  LEGITIMATE")
 
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Fraud Probability", f"{prob * 100:.1f}%")
@@ -257,7 +247,7 @@ with tab1:
         
         st.progress(float(prob))
 
-        st.subheader("📝 GPT-2 Explanation")
+        st.subheader(" GPT-2 Explanation")
 
         with st.spinner("Generating explanation..."):
             from gpt2_explainer import generate_fraud_explanation
@@ -285,22 +275,22 @@ with tab1:
 
         if processed_exp["keywords"]:
             st.caption(
-                "🔑 Fraud keywords: "
+                " Fraud keywords: "
                 + " · ".join(f"`{word}`" for word in processed_exp["keywords"])
             )
 
-        st.subheader("🔍 Feature Contributions")
+        st.subheader(" Feature Contributions")
         contrib_df = explain_single_prediction(row, feature_names)
         st.dataframe(contrib_df, use_container_width=True)
 
         st.subheader("Recommended Action")
 
         if prob >= 0.70:
-            st.error("🚫 Block this transaction and contact the cardholder immediately.")
+            st.error(" Block this transaction and contact the cardholder immediately.")
         elif prob >= 0.30:
-            st.warning("⚠️ Flag this transaction for manual review or OTP verification.")
+            st.warning(" Flag this transaction for manual review or OTP verification.")
         else:
-            st.success("✅ Approve the transaction.")
+            st.success(" Approve the transaction.")
 
         st.session_state["last_transaction"] = {
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -320,11 +310,8 @@ with tab1:
             "model": phase,
             "explanation": explanation_text
         }
-
-
-# ==========================================================
 # TAB 2 — MODEL EVALUATION
-# ==========================================================
+
 with tab2:
     st.subheader("Model Performance on Test Data")
     st.info("Click the button below to load evaluation charts.")
@@ -356,20 +343,30 @@ with tab2:
 
         metrics_df = pd.DataFrame(rows)
 
-        st.subheader("📋 Model Comparison Table")
+        st.subheader(" Model Comparison Table")
         st.dataframe(metrics_df, use_container_width=True)
+        st.subheader(" Recall Comparison Across Models")
 
-        st.subheader("📊 Model Comparison Chart")
+        fig, ax = plt.subplots(figsize=(8,4))
 
-        chart_df = metrics_df.set_index("Model")[["Accuracy", "Precision", "Recall", "F1 Score", "ROC AUC"]]
-        st.bar_chart(chart_df)
-
-        selected_model_name = st.selectbox(
-            "Select model for detailed view",
-            metrics_df["Model"].tolist()
+        ax.bar(
+            metrics_df["Model"],
+            metrics_df["Recall"]
         )
 
-        selected_model = dict(model_list)[selected_model_name]
+        ax.set_ylabel("Recall")
+        ax.set_xlabel("Models")
+        ax.set_title("Recall Comparison Across Models")
+        ax.set_ylim(0, 1)
+
+        for i, value in enumerate(metrics_df["Recall"]):
+            ax.text(i, value + 0.01, f"{value:.3f}", ha="center")
+
+        st.pyplot(fig)
+        plt.close(fig)
+
+        selected_model_name = "Decision Tree"  
+        selected_model = stacking_eval
 
         y_pred_selected = selected_model.predict(X_test)
         y_prob_selected = selected_model.predict_proba(X_test)[:, 1]
@@ -406,11 +403,7 @@ with tab2:
 
             st.pyplot(fig)
             plt.close(fig)
-
-
-# ==========================================================
 # TAB 3 — DATA INSIGHTS
-# ==========================================================
 with tab3:
     st.subheader("Dataset Visualizations")
     st.info("Click the button below to load sample dataset charts.")
@@ -457,10 +450,8 @@ with tab3:
             category_fraud = df.groupby("category")["is_fraud"].mean().sort_values(ascending=False)
             st.bar_chart(category_fraud)
 
-
-# ==========================================================
 # TAB 4 — FEATURE IMPORTANCE
-# ==========================================================
+
 with tab4:
     st.subheader("Feature Importance Analysis")
     st.markdown("This shows which features the Decision Tree used most while detecting fraud.")
@@ -474,19 +465,8 @@ with tab4:
         top5 = get_feature_importance(top_n=5)
         st.table(top5)
 
-        st.info("""
-        Usually important fraud signals include:
-        - Transaction amount
-        - Merchant category
-        - Transaction hour
-        - City population
-        - Merchant behavior
-        """)
-
-
-# ==========================================================
 # TAB 5 — FRAUD REPORT
-# ==========================================================
+
 with tab5:
     st.subheader("Download Investigation Report")
     st.markdown("First check a transaction in Tab 1. Then download the report here.")
@@ -545,12 +525,10 @@ RECOMMENDED ACTION
             use_container_width=True
         )
 
-
-# ==========================================================
 # TAB 6 — FRAUD ASSISTANT
-# ==========================================================
+
 with tab6:
-    st.subheader("🤖 LangChain Fraud Assistant")
+    st.subheader("LangChain Fraud Assistant")
     st.markdown("Ask a simple fraud-related question.")
 
     query = st.text_input(
@@ -570,9 +548,4 @@ with tab6:
             st.write(answer)
 
     st.markdown("---")
-    st.markdown("""
-    **How the assistant works:**
-    - Uses the saved ML model for prediction
-    - Uses GPT-2 for plain-English explanation
-    - Uses NLTK for keyword extraction
-    """)
+  

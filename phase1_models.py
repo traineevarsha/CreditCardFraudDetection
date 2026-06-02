@@ -1,30 +1,20 @@
-# phase1_models.py
-# Phase 1: Train 3 fraud detection models
-# This version is safer for unseen/random input.
-# It avoids exact merchant/city/job memorization.
-
 import os
 import joblib
 import numpy as np
 import pandas as pd
-
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import classification_report, roc_auc_score
-
 from imblearn.over_sampling import SMOTE
-
-
 SEED = 42
 DATA_PATH = "data/fraudTrain.csv"
 MODEL_DIR = "models"
 
 np.random.seed(SEED)
 os.makedirs(MODEL_DIR, exist_ok=True)
-
 
 def load_data():
     print("Loading dataset...")
@@ -33,19 +23,16 @@ def load_data():
     df.dropna(inplace=True)
     return df
 
-
 def prepare_features(df):
     print("Preparing features...")
 
     df["hour"] = pd.to_datetime(df["trans_date_trans_time"]).dt.hour
     df["age"] = (pd.Timestamp.today() - pd.to_datetime(df["dob"])).dt.days // 365
 
-    # Simple behavior-based features
     df["is_night"] = (df["hour"] < 6).astype(int)
     df["is_high_amount"] = (df["amt"] > 500).astype(int)
     df["is_small_city"] = (df["city_pop"] < 5000).astype(int)
 
-    # Drop columns not useful for unseen/random user input
     drop_cols = [
         "Unnamed: 0",
         "trans_date_trans_time",
@@ -62,16 +49,13 @@ def prepare_features(df):
         "merch_lat",
         "merch_long",
 
-        # Removed for better unseen-data support
         "merchant",
         "city",
         "job"
     ]
 
     df.drop(columns=drop_cols, inplace=True)
-
     return df
-
 
 def encode_columns(df):
     print("Encoding categorical columns...")
@@ -85,9 +69,7 @@ def encode_columns(df):
         encoders[col] = encoder
 
     joblib.dump(encoders, f"{MODEL_DIR}/encoders.pkl")
-
     return df
-
 
 def train_and_evaluate_models(X_train, X_test, y_train, y_test):
     print("Training models...")
@@ -146,7 +128,6 @@ def train_and_evaluate_models(X_train, X_test, y_train, y_test):
         )
 
     return results
-
 
 def save_models(results, X_train, X_test, y_train, y_test):
     print("Saving models...")
@@ -234,7 +215,6 @@ def main():
     )
 
     print("\nPhase 1 training complete.")
-
 
 if __name__ == "__main__":
     main()
