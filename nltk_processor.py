@@ -1,5 +1,3 @@
-
-
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
@@ -7,7 +5,7 @@ nltk.download("punkt",        quiet=True)
 nltk.download("stopwords",    quiet=True)
 nltk.download("punkt_tab",    quiet=True)
 
-# Fraud-related keywords to highlight in the UI
+# Fraud-related keywords
 FRAUD_KEYWORDS = {
     "suspicious", "unusual", "fraud", "fraudulent", "risk", "high",
     "unauthorized", "anomaly", "irregular", "flagged", "alert",
@@ -15,7 +13,6 @@ FRAUD_KEYWORDS = {
 }
 
 STOP_WORDS = set(stopwords.words("english"))
-
 
 def tokenize_explanation(text: str) -> dict:
     """
@@ -30,7 +27,6 @@ def tokenize_explanation(text: str) -> dict:
         "sentences": sent_tokens
     }
 
-
 def extract_fraud_keywords(text: str) -> list:
     """
     Task 2 — Keyword Extraction: Filter stopwords and find fraud-indicator words.
@@ -38,14 +34,12 @@ def extract_fraud_keywords(text: str) -> list:
     """
     tokens = word_tokenize(text.lower())
     
-    # Remove stopwords, keep only meaningful words
+    # Remove stopwords
     meaningful_tokens = [t for t in tokens if t not in STOP_WORDS and t.isalpha()]
     
-    # Find tokens that match our fraud keyword list
     found_keywords = [t for t in meaningful_tokens if t in FRAUD_KEYWORDS]
     
     return list(set(found_keywords))  # Deduplicate
-
 
 def clean_gpt2_output(text: str) -> str:
     """
@@ -53,15 +47,11 @@ def clean_gpt2_output(text: str) -> str:
     GPT-2 sometimes repeats phrases or produces garbled output.
     """
     sentences = sent_tokenize(text)
-    
-    # Keep only the first 3 sentences (GPT-2 can ramble)
     cleaned_sentences = sentences[:3]
     
-    # Remove any sentence shorter than 5 words (usually incomplete)
     cleaned_sentences = [s for s in cleaned_sentences if len(s.split()) >= 5]
     
     return " ".join(cleaned_sentences).strip()
-
 
 def process_explanation(raw_text: str) -> dict:
     """Run all three NLTK tasks on a GPT-2 explanation."""
@@ -74,7 +64,6 @@ def process_explanation(raw_text: str) -> dict:
         "keywords": keywords,
         "clean":    clean_txt
     }
-
 
 if __name__ == "__main__":
     sample = ("This transaction appears suspicious due to an unusual location "

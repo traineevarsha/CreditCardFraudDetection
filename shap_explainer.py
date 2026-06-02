@@ -1,10 +1,3 @@
-# shap_explainer.py
-# Feature importance and SHAP-style explainability analysis.
-# Uses Decision Tree's built-in feature importance — no extra library needed.
-# For tree-based models, feature importance gives the same insight as SHAP values.
-#
-# Owner: [Team Member 5]
-
 import joblib
 import pandas as pd
 import matplotlib.pyplot as plt
